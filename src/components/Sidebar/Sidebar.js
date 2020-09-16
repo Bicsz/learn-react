@@ -16,6 +16,7 @@ import Hidden from "@material-ui/core/Hidden";
 import Collapse from "@material-ui/core/Collapse";
 import Icon from "@material-ui/core/Icon";
 
+import Cookies from 'universal-cookie';
 // core components
 import WorkspaceNavbarLinks from "../Navbars/WorkspaceNavbarLinks.js";
 
@@ -307,6 +308,14 @@ class Sidebar extends React.Component {
             );
         });
     };
+    Exit(){
+
+        const cookies = new Cookies();///////////////////
+        cookies.set('LOGIN',"",{ path: '/' });
+        cookies.set('PASSWORD',"",{ path: '/' });
+        debugger
+        window.location.reload();
+    };
 
     render() {
         const {
@@ -411,6 +420,7 @@ class Sidebar extends React.Component {
                                 </ListItem>
                                 <ListItem className={classes.collapseItem}>
                                     <NavLink
+                                        onClick={()=>this.Exit()}
                                         to="#"
                                         className={
                                             classes.itemLink + " " + classes.userCollapseLinks

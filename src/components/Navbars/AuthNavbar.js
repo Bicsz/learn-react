@@ -25,10 +25,12 @@ import styles from "../../assets/jss/material-dashboard-pro-react/components/aut
 import labels from "../../variables/labels";
 import Icon from "@material-ui/core/Icon";
 import InputAdornment from "@material-ui/core/InputAdornment";
+import Cookies from 'universal-cookie';/////////////////////
 
 const useStyles = makeStyles(styles);
 
 export default function AuthNavbar(props) {
+    const cookies = new Cookies();///////////////////
     const [open, setOpen] = React.useState(false);
     const handleDrawerToggle = () => {
         setOpen(!open);
@@ -42,55 +44,52 @@ export default function AuthNavbar(props) {
     const appBarClasses = cx({
         [" " + classes[color]]: color
     });
-    const list = (
-        <List className={classes.list}>
-            <ListItem className={classes.listItem}>
-                <NavLink
-                    to={"/workspace/patients"}
-                    className={cx(classes.navLink, {
-                        [classes.navLinkActive]: activeRoute("/workspace/patients")
-                    })}
-                >
-                    <ListItemText
-                        primary={"Защищенная"}
-                        disableTypography={true}
-                        className={classes.listItemText}
-                    />
-                </NavLink>
-            </ListItem>
-            <ListItem className={classes.listItem}>
 
-                <NavLink
-                    to={"/auth/register-page"}
-                    className={cx(classes.navLink, {
-                        [classes.navLinkActive]: activeRoute("/auth/register-page")
-                    })}
-                >
-                    <PersonAdd className={classes.listItemIcon}/>
-                    <ListItemText
-                        primary={labels.REGISTRATION}
-                        disableTypography={true}
-                        className={classes.listItemText}
-                    />
-                </NavLink>
-            </ListItem>
-            <ListItem className={classes.listItem}>
-                <NavLink
-                    to={"/auth/login-page"}
-                    className={cx(classes.navLink, {
-                        [classes.navLinkActive]: activeRoute("/auth/login-page")
-                    })}
-                >
-                    <Fingerprint className={classes.listItemIcon}/>
-                    <ListItemText
-                        primary={labels.LOGIN}
-                        disableTypography={true}
-                        className={classes.listItemText}
-                    />
-                </NavLink>
-            </ListItem>
-        </List>
-    );
+    const list_pages=[////////////////
+        {
+            title:"Защищенная",
+            url:"/workspace/patients",
+            onlyAuth:true
+        },
+        {
+            title:labels.REGISTRATION,
+            url:"/auth/register-page",
+            onlyAuth:false
+        },
+        {
+            title:labels.LOGIN,
+            url:"/auth/login-page",
+            onlyAuth:false
+        }
+    ];
+    const AUTH={
+        LOGIN:cookies.get('LOGIN'),
+        PASSWORD:cookies.get('PASSWORD'),
+        isAUTH:cookies.get('LOGIN')&&cookies.get('PASSWORD')?true:false
+    }
+
+    const list=list_pages.map((OBJ)=>{
+        if(!AUTH.isAUTH && OBJ.onlyAuth) 
+            return null;
+        else
+            return <ListItem className={classes.listItem}>
+                        <NavLink
+                            to={OBJ.url}
+                            className={cx(classes.navLink, {
+                                [classes.navLinkActive]: activeRoute(OBJ.url)
+                            })}
+                        >
+                            <ListItemText
+                                primary={OBJ.title}
+                                disableTypography={true}
+                                className={classes.listItemText}
+                            />
+                        </NavLink>
+                    </ListItem>
+    })
+
+ 
+    
     return (
         <AppBar position="static" className={classes.appBar + appBarClasses}>
             <Toolbar className={classes.container}>
@@ -102,7 +101,11 @@ export default function AuthNavbar(props) {
                     <div className={classes.flex}>
                     </div>
                 </Hidden>
-                <Hidden smDown>{list}</Hidden>
+                <Hidden smDown>
+                    <List className={classes.list}>
+                        {list}
+                    </List>
+                </Hidden>
                 <Hidden mdUp>
                     <Button
                         className={classes.sidebarButton}
@@ -128,7 +131,9 @@ export default function AuthNavbar(props) {
                                 keepMounted: true // Better open performance on mobile.
                             }}
                         >
-                            {list}
+                            <List className={classes.list}>
+                                {list}
+                            </List>
                         </Drawer>
                     </Hidden>
                 </Hidden>

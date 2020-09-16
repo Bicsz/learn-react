@@ -12,6 +12,7 @@ import styles from "../assets/jss/material-dashboard-pro-react/layouts/authStyle
 
 import register from "../assets/img/register.jpeg";
 import login from "../assets/img/login.jpeg";
+import Cookies from 'universal-cookie';
 
 const useStyles = makeStyles(styles);
 

@@ -1,5 +1,5 @@
-import React from "react";
 
+import React, { useEffect, useState } from "react";/////////////////////////
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import InputAdornment from "@material-ui/core/InputAdornment";
@@ -17,7 +17,7 @@ import Card from "../../components/Card/Card.js";
 import CardBody from "../../components/Card/CardBody.js";
 import CardHeader from "../../components/Card/CardHeader.js";
 import CardFooter from "../../components/Card/CardFooter.js";
-
+import Cookies from 'universal-cookie';
 import styles from "../../assets/jss/material-dashboard-pro-react/views/loginPageStyle.js";
 
 import labels from "../../variables/labels";
@@ -25,7 +25,19 @@ import labels from "../../variables/labels";
 const useStyles = makeStyles(styles);
 
 export default function LoginPage() {
+  const cookies = new Cookies();///////////////////
   const classes = useStyles();
+  const [login, setLogin] = useState(null);/////////////
+  const [password, setPassword] = useState(null);////////////////////
+
+
+ const SignIn=()=>{
+  //Тут запрос к бэку и проверка валидности данных, и если они валидны, то запомнить куки
+  cookies.set('LOGIN', login, { path: '/' });
+  cookies.set('PASSWORD', password, { path: '/' });
+  window.location.reload();
+ }
+
   return (
     <div className={classes.container}>
       <GridContainer justify="center">
@@ -46,12 +58,14 @@ export default function LoginPage() {
                   formControlProps={{
                     fullWidth: true
                   }}
+                  
                   inputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
                         <Email className={classes.inputAdornmentIcon} />
                       </InputAdornment>
-                    )
+                    ),
+                    onChange:event => setLogin(event.target.value)////////////////
                   }}
                 />
                 <CustomInput
@@ -60,6 +74,7 @@ export default function LoginPage() {
                   formControlProps={{
                     fullWidth: true
                   }}
+                 
                   inputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -69,12 +84,13 @@ export default function LoginPage() {
                       </InputAdornment>
                     ),
                     type: "password",
-                    autoComplete: "off"
+                    autoComplete: "off",
+                    onChange:event => setPassword(event.target.value)////////////////
                   }}
                 />
               </CardBody>
               <CardFooter className={classes.justifyContentCenter}>
-                <Button color="primary" simple size="lg" block>
+                <Button color="primary" simple onClick={SignIn} size="lg" block>
                   {labels.ENTER}
                 </Button>
               </CardFooter>
